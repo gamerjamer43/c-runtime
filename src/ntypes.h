@@ -1,11 +1,12 @@
-#ifndef NTYPES_H
-#define NTYPES_H
-
 /**
  * ntypes - simple ass header because i hate long types
  * more will be added as i get more pissed off with C's unnecessary verbosity (at times)
+ * 
  * @author Noah Mingolelli
  */
+
+#ifndef NTYPES_H
+#define NTYPES_H
 
 #include <stdint.h>
 #include <stdbool.h>

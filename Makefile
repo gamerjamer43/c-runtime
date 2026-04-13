@@ -1,7 +1,8 @@
 CC = gcc
 CFLAGS = -std=c11 -Wall -Wextra -Wpedantic
+
+HEADERS = src/dynarr.h src/typing.h src/ntypes.h
 SOURCES = main.c
-HEADERS = dynarr.h typing.h ntypes.h
 TARGET = app.exe
 
 all: $(TARGET)

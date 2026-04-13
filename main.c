@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#include "typing.h"
-#include "dynarr.h"
+#include "src/typing.h"
+#include "src/dynarr.h"
 
 int main() {
     DynArr nums = da_make_arr(TYPE_INT);

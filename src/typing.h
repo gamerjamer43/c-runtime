@@ -1,3 +1,20 @@
+/**
+ * typing - the formal spec for type management in this system.
+ * holds the standard Type enum, the dynamic array type, typed values, options, 
+ * along with a safe api for creation of both options and values
+ * 
+ * Type       -> enum containing all types recognized (with the last value reserved for sizing)
+ * DynArr     -> struct containing a pointer to the array items (which can be pointer indexed) as well as type and size details
+ * TypedValue -> a union containing all types recognized in type (null is an int value of 0)
+ * Value      -> a struct containing a TypedValue and its Type (allowing us to pun properly)
+ * 
+ * char* type_of(Value value)                -> given a value, return the string type of it's name (RTTI)
+ * Value make_val(Type type, TypedValue val) -> given a Type and TypedValue, safely validate and return a Value
+ * Value unwrap_option(Option opt)           -> return the options value, or null if nothing is presented. considering adding a unit type for this
+ * 
+ * @author Noah Mingolelli
+ */
+
 #ifndef TYPING_H
 #define TYPING_H
 
