@@ -9,10 +9,10 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 - [x] Option type (some presenting a boolean, which if true can be unwrapped)
 - [x] Typed, resizeable, heap dynamic arrays
 - [x] Safe API for all operations 
+- [X] Safe unwrap of Option types
 
 ## What I Can Think of Adding
 
-- [] Safe unwrap of Option types
 - [] Custom heap & API (malloc, realloc, free, and others)
 - [] Runtime error system
 
