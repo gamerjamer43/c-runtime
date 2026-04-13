@@ -21,8 +21,9 @@ int main() {
     // print safely (falls through to cleanup when done)
     for (usize i = 0; i < nums.len; i++) {
         Option opt = da_safe_index(&nums, i);
-        if (opt.some) {
-            Value val = unwrap_option(opt);
+        Value val = unwrap_option(opt);
+
+        if (val.type != TYPE_NULL) {
             printf("%lld\n", val.val.i);
         }
     }

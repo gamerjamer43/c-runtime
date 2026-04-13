@@ -113,7 +113,7 @@ static inline Value unwrap_option(Option opt) {
     if (opt.some) {
         return opt.val;
     }
-    
+
     return make_val(TYPE_NULL, (TypedValue){.i = 0});
 }
 
