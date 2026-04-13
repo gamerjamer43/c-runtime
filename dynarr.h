@@ -6,48 +6,46 @@
 /**
  * attempt to resize the array provided a new size
  */
-static inline bool da_resize(DynArr *nums, usize new_cap) {
-    void *new_data = realloc(nums->data, new_cap * sizeof(Value));
+static inline bool da_resize(DynArr *arr, usize new_cap) {
+    void *new_data = realloc(arr->data, new_cap * sizeof(Value));
     if (new_data == NULL) return false;
 
-    nums->data = new_data;
-    nums->cap = new_cap;
+    arr->data = new_data;
+    arr->cap = new_cap;
     return true;
 }
 
 /**
  * attempt to append a value to the array, return boolean success 
  */
-static inline bool da_append(DynArr *nums, Value value) {
-    if (nums->len == nums->cap) {
-        usize new_cap = nums->cap == 0 ? 8 : nums->cap * 2;
+static inline bool da_append(DynArr *arr, Value value) {
+    if (arr->len == arr->cap) {
+        usize new_cap = arr->cap == 0 ? 8 : arr->cap * 2;
 
-        if (!da_resize(nums, new_cap)) return false;
-        if (nums->type != value.type) return false;
+        if (!da_resize(arr, new_cap)) return false;
+        if (arr->type != value.type) return false;
     }
 
-    Value *arr = (Value *)nums->data;
-    arr[nums->len++] = value;
+    Value *data = (Value *)arr->data;
+    data[arr->len++] = value;
     return true;
 }
 
 /**
  * index safely into an array, returning an option containing some if data is present, otherwise none
  */
-static inline Option da_safe_index(const DynArr *nums, usize index) {
-    if (index >= nums->len) {
+static inline Option da_safe_index(const DynArr *arr, usize index) {
+    if (index >= arr->len) {
         return (Option){ 
             .some = false, 
-            .type = TYPE_NULL, 
-            .val = 0
+            .val = make_val(TYPE_NULL, (TypedValue){.i = 0})
         };
     }
 
-    Value *arr = (Value *)nums->data;
+    Value *data = (Value *)arr->data;
     return (Option){ 
-        .some = true, 
-        .type = nums->type,
-        .val = (void*)(uintptr_t)arr[index].val.i
+        .some = true,
+        .val = data[index]
     };
 }
 

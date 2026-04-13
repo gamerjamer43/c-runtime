@@ -22,7 +22,7 @@ int main() {
     for (usize i = 0; i < nums.len; i++) {
         Option opt = da_safe_index(&nums, i);
         if (opt.some) {
-            printf("%lld\n", (int64_t)opt.val);
+            printf("%lld\n", opt.val.val.i);
         }
     }
 

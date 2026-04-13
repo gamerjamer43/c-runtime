@@ -1,8 +1,7 @@
 #ifndef TYPING_H
 #define TYPING_H
 
-#include <stdbool.h>
-#include <stdint.h>
+#include <stdlib.h>
 #include "ntypes.h"
 
 /**
@@ -25,23 +24,13 @@ typedef enum {
 } Type;
 
 /**
- * optional value wrapper. 
- * if some is true, it can be unwrapped
- */
-typedef struct {
-    void* val;
-    bool some;
-    Type type;
-} Option;
-
-/**
  * dynamic arrays, resizeable with the api calls below
  */
 typedef struct {
-    Type type;
     void* data;
     usize cap;
     usize len;
+    Type type;
 } DynArr;
 
 /**
@@ -60,10 +49,28 @@ typedef union {
     DynArr* arr;
 } TypedValue;
 
+/**
+ * something definitively containing a value
+ */
 typedef struct {
     TypedValue val;
     Type type;
+
+    // explicit padding i might be able to do something with
+    u8 padding[7];
 } Value;
+
+/**
+ * optional value wrapper. 
+ * if some is true, it can be unwrapped
+ */
+typedef struct {
+    Value val;
+    bool some;
+
+    // explicit padding i might be able to do something with
+    u8 padding[6];
+} Option;
 
 /**
  * return the type of a provided value
@@ -91,12 +98,23 @@ static inline const char* type_of(Value value) {
 /**
  * simple helper to make values safely
  */
-static inline Value make_val(Type t, TypedValue v) {
-    if (t < 0 || t >= COUNT_OF_TYPES) {
+static inline Value make_val(Type type, TypedValue val) {
+    if (type < 0 || type >= COUNT_OF_TYPES) {
         return (Value){.type = TYPE_NULL, .val = (TypedValue){.i = 0}};
     }
 
-    return (Value){.type = t, .val = v};
+    return (Value){.type = type, .val = val};
+}
+
+/**
+ * safe helper to unwrap option types
+ */
+static inline Value unwrap_option(Option opt) {
+    if (opt.some) {
+        return opt.val;
+    }
+    
+    return make_val(TYPE_NULL, (TypedValue){.i = 0});
 }
 
 #endif
