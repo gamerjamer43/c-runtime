@@ -22,6 +22,18 @@
 #include "ntypes.h"
 
 /**
+ * macro helper to cleanly provide creation of values at comp time
+ * char* doesnt work due to an implicit cast 
+ */
+#define AS_VAL(x) _Generic((x), \
+    int:       make_val(TYPE_INT,    (TypedValue){.i =   (i64)(x)}), \
+    long long: make_val(TYPE_INT,    (TypedValue){.i =   (i64)(x)}), \
+    float:     make_val(TYPE_FLOAT,  (TypedValue){.f =   (f32)(x)}), \
+    double:    make_val(TYPE_DOUBLE, (TypedValue){.d =   (f64)(x)}), \
+    char:      make_val(TYPE_CHAR,   (TypedValue){.c =   (char)(x)}) \
+)
+
+/**
  * enum containing all types recognized by the runtime.
  */
 typedef enum {
@@ -124,6 +136,13 @@ static inline Value make_val(Type type, TypedValue val) {
 }
 
 /**
+ * because it wasnt working with char* here's an as_str helper too
+ */
+static inline Value as_str(char* data) {
+    return make_val(TYPE_STR, (TypedValue){.str = data});
+}
+
+/**
  * safe helper to unwrap option types
  */
 static inline Value unwrap_option(Option opt) {
@@ -131,7 +150,7 @@ static inline Value unwrap_option(Option opt) {
         return opt.val;
     }
 
-    return make_val(TYPE_NULL, (TypedValue){.i = 0});
+    return AS_VAL(0);
 }
 
 #endif

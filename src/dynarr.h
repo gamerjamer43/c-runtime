@@ -4,7 +4,7 @@
  * 
  * bool da_resize(DynArr *arr, usize new_cap)           -> returns true if a resize was possible (and done), false if something went wrong
  * bool da_append(DynArr *arr, Value value)             -> returns true if a value was added to the provided array, return false if something went wrong
- * Option da_safe_index(const DynArr *arr, usize index) -> try and index into the array, if a value is presented return an Option with some = true, else return an option with some = false
+ * Option da_index(const DynArr *arr, usize index) -> try and index into the array, if a value is presented return an Option with some = true, else return an option with some = false
  * DynArr da_make_arr(Type t)                           -> safely create a new dynamic array given its type
  * 
  * @author Noah Mingolelli
@@ -14,6 +14,13 @@
 #define DYNARR_H
 
 #include "typing.h"
+
+/**
+ * helper to create an array safely
+ */
+static inline DynArr da_make_arr(Type t) {
+    return (DynArr){.type = t, .cap = 0, .len = 0, .data = NULL};
+}
 
 /**
  * attempt to resize the array provided a new size
@@ -50,7 +57,7 @@ static inline bool da_append(DynArr *arr, Value value) {
 /**
  * index safely into an array, returning an option containing some if data is present, otherwise none
  */
-static inline Option da_safe_index(const DynArr *arr, usize index) {
+static inline Option da_index(const DynArr *arr, usize index) {
     if (index >= arr->len) {
         return (Option){ 
             .some = false, 
@@ -68,7 +75,7 @@ static inline Option da_safe_index(const DynArr *arr, usize index) {
 /**
  * slot an item at a certain index of an array
  */
-static inline bool da_safe_insert(DynArr *arr, Value value, usize index) {
+static inline bool da_insert(DynArr *arr, Value value, usize index) {
     if (!arr) return false;
     if (arr->type != value.type) return false;
 
@@ -88,13 +95,6 @@ static inline bool da_safe_insert(DynArr *arr, Value value, usize index) {
     arr->len = (index >= arr->len) ? index + 1 : arr->len;
     data[index] = value;
     return true;
-}
-
-/**
- * helper to create an array safely
- */
-static inline DynArr da_make_arr(Type t) {
-    return (DynArr){.type = t, .cap = 0, .len = 0, .data = NULL};
 }
 
 /**
