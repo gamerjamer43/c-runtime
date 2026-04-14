@@ -131,4 +131,13 @@ static inline bool da_free(DynArr* arr) {
     return true;
 }
 
+/**
+ * helper to slice sections of a dynamic array.
+ * to iterate, simply use a for loop from start to end
+ */
+static inline Slice da_slice(DynArr* data, usize start, usize end) {
+    if (data == NULL || start > end || end > data->len) return (Slice){0};
+    return (Slice){.type = data->type, .data = data->data, .start = start, .end = end};
+}
+
 #endif

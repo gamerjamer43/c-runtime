@@ -102,6 +102,16 @@ typedef struct {
 } Option;
 
 /**
+ * array slice. fat pointer containing a type, and start to end range
+ */
+typedef struct {
+    void* data;
+    usize start;
+    usize end;
+    Type type;
+} Slice;
+
+/**
  * return the type of a provided value
  */
 static inline const char* type_of(Value value) {

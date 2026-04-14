@@ -11,15 +11,22 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 - [x] Safe API for all operations (option types, dynamic arrays, and value creation)
 - [X] Ownership semantics and recursive freeing for pointer types
 - [X] Array indexing
+- [X] Array slicing
 
 ## What I Can Think of Adding:
 
-- Array slicing and Fat Pointers
 - Runtime error system
 - Proper String type (with length and capacity)
 - Safe getters for union values (checking `value.type` before extraction)
-- Custom heap & API (malloc, realloc, free, and others)
+- Other types of fat pointer
+- Safe casting between types
+- Custom heap & API (malloc, realloc, free, ref/deref and others)
 - Hash maps / Dictionaries
+
+## Known Pitfalls:
+
+- Slicing is not fully safe yet. It can point to deinitialized data, and uninitialized data can be in the slice range (which is mostly prevented by the safety of array insertions).
+- The generic AS_VAL does not encompass char pointers because of a missize. Use as_str("data") instead.
 
 ## Why Did I Make This?
 
