@@ -21,12 +21,20 @@ int main() {
     // print safely (falls through to cleanup when done)
     for (usize i = 0; i < nums.len; i++) {
         Option opt = da_safe_index(&nums, i);
-        Value val = unwrap_option(opt);
+        Value unwrapped = unwrap_option(opt);
 
-        if (val.type != TYPE_NULL) {
-            printf("%lld\n", val.val.i);
+        if (unwrapped.type != TYPE_NULL) {
+            printf("%lld\n", unwrapped.as.i);
         }
     }
+
+    // insert 42 at position 0
+    Value val = make_val(TYPE_INT, (TypedValue){.i = 42});
+    da_safe_insert(&nums, val, 0);
+
+    // print that out
+    val = unwrap_option(da_safe_index(&nums, 0));
+    printf("%lli", val.as.i);
 
 // using go to because clean! clean!
 cleanup:

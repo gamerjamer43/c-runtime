@@ -62,6 +62,25 @@ static inline Option da_safe_index(const DynArr *arr, usize index) {
 }
 
 /**
+ * slot an item at a certain index of an array
+ */
+static inline bool da_safe_insert(DynArr *arr, Value value, usize index) {
+    if (!arr) return false;
+    if (arr->type != value.type) return false;
+
+    while (index >= arr->cap) {
+        usize new_cap = arr->cap == 0 ? 8 : arr->cap * 2;
+
+        if (!da_resize(arr, new_cap)) return false;
+    }
+
+    Value *data = (Value *)arr->data;
+    arr->len = (index >= arr->len) ? index + 1 : arr->len;
+    data[index] = value;
+    return true;
+}
+
+/**
  * helper to create an array safely
  */
 static inline DynArr da_make_arr(Type t) {
@@ -82,13 +101,13 @@ static inline bool da_free(DynArr* arr) {
         for (usize i = 0; i < arr->len; i++) {
             // strings are null terminated and we free whats at the pointer
             if (arr->type == TYPE_STR) {
-                free(data[i].val.str);
+                free(data[i].as.str);
             } 
             
             // nested arrays need to have this called on them again
             else if (arr->type == TYPE_ARR) {
-                da_free(data[i].val.arr);
-                free(data[i].val.arr);
+                da_free(data[i].as.arr);
+                free(data[i].as.arr);
             }
         }
     }

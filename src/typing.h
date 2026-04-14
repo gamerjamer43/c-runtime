@@ -70,7 +70,7 @@ typedef union {
  * something definitively containing a value
  */
 typedef struct {
-    TypedValue val;
+    TypedValue as;
     Type type;
 
     // explicit padding i might be able to do something with
@@ -117,10 +117,10 @@ static inline const char* type_of(Value value) {
  */
 static inline Value make_val(Type type, TypedValue val) {
     if (type < 0 || type >= COUNT_OF_TYPES) {
-        return (Value){.type = TYPE_NULL, .val = (TypedValue){.i = 0}};
+        return (Value){.type = TYPE_NULL, .as = (TypedValue){.i = 0}};
     }
 
-    return (Value){.type = type, .val = val};
+    return (Value){.type = type, .as = val};
 }
 
 /**
