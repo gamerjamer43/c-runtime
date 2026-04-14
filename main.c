@@ -4,6 +4,7 @@
 
 #include "src/typing.h"
 #include "src/dynarr.h"
+#include "src/error.h"
 
 int main() {
     DynArr nums = da_make_arr(TYPE_INT);

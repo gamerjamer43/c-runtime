@@ -10,11 +10,12 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 - [x] Typed, resizeable, heap dynamic arrays
 - [x] Safe API for all operations (option types, dynamic arrays, and value creation)
 - [X] Ownership semantics and recursive freeing for pointer types
+- [X] Array indexing
 
 ## What I Can Think of Adding:
 
+- Array slicing and Fat Pointers
 - Runtime error system
-- Array indexing
 - Proper String type (with length and capacity)
 - Safe getters for union values (checking `value.type` before extraction)
 - Custom heap & API (malloc, realloc, free, and others)
