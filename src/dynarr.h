@@ -75,6 +75,12 @@ static inline bool da_safe_insert(DynArr *arr, Value value, usize index) {
     }
 
     Value *data = (Value *)arr->data;
+    
+    // zero initalize all slots in between
+    for (usize i = arr->len; i < index; i++) {
+        data[i] = make_val(TYPE_NULL, (TypedValue){.i = 0});
+    }
+
     arr->len = (index >= arr->len) ? index + 1 : arr->len;
     data[index] = value;
     return true;
@@ -99,13 +105,12 @@ static inline bool da_free(DynArr* arr) {
         Value *data = (Value *)arr->data;
 
         for (usize i = 0; i < arr->len; i++) {
-            // strings are null terminated and we free whats at the pointer
-            if (arr->type == TYPE_STR) {
+            // Null check before freeing nested types to handle gaps and uninitialized data
+            if (arr->type == TYPE_STR && data[i].as.str != NULL) {
                 free(data[i].as.str);
             } 
             
-            // nested arrays need to have this called on them again
-            else if (arr->type == TYPE_ARR) {
+            else if (arr->type == TYPE_ARR && data[i].as.arr != NULL) {
                 da_free(data[i].as.arr);
                 free(data[i].as.arr);
             }
