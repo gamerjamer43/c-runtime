@@ -57,11 +57,11 @@ typedef struct {
 typedef union {
     bool b;
     char c;
-    int64_t i;
-    uint64_t u;
+    i64 i;
+    u64 u;
     usize s;
-    float f;
-    double d;
+    f32 f;
+    f64 d;
     char* str;
     DynArr* arr;
 } TypedValue;
@@ -86,7 +86,7 @@ typedef struct {
     bool some;
 
     // explicit padding i might be able to do something with
-    u8 padding[6];
+    u8 padding[7];
 } Option;
 
 /**

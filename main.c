@@ -9,7 +9,7 @@ int main() {
     DynArr nums = da_make_arr(TYPE_INT);
 
     // append items to the array
-    for (int i = 0; i < 10; i++) {
+    for (i32 i = 0; i < 10; i++) {
         Value add = make_val(TYPE_INT, (TypedValue){.i = i});
 
         if (!da_append(&nums, add)) {

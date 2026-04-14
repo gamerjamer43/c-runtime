@@ -15,6 +15,10 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 
 - [] Custom heap & API (malloc, realloc, free, and others)
 - [] Runtime error system
+- [] Ownership semantics and recursive freeing for pointer types
+- [] Safe getters for union values (checking `value.type` before extraction)
+- [] Hash maps / Dictionaries
+- [] Proper String type (with length and capacity)
 
 ## Why Did I Make This
 
