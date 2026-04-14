@@ -68,4 +68,39 @@ static inline DynArr da_make_arr(Type t) {
     return (DynArr){.type = t, .cap = 0, .len = 0, .data = NULL};
 }
 
+/**
+ * helper to recursively free flat and pointer based items in an array
+ */
+static inline bool da_free(DynArr* arr) {
+    // freed already
+    if (arr->data == NULL) return true;
+
+    // nested array types (char array and array arrays)
+    if (arr->type == TYPE_STR || arr->type == TYPE_ARR) {
+        Value *data = (Value *)arr->data;
+
+        for (usize i = 0; i < arr->len; i++) {
+            // strings are null terminated and we free whats at the pointer
+            if (arr->type == TYPE_STR) {
+                free(data[i].val.str);
+            } 
+            
+            // nested arrays need to have this called on them again
+            else if (arr->type == TYPE_ARR) {
+                da_free(data[i].val.arr);
+                free(data[i].val.arr);
+            }
+        }
+    }
+
+    // free container and null
+    free(arr->data);
+    arr->data = NULL;
+    arr->len = 0;
+    arr->cap = 0;
+
+    // success
+    return true;
+}
+
 #endif

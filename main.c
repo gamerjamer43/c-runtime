@@ -30,6 +30,6 @@ int main() {
 
 // using go to because clean! clean!
 cleanup:
-    free(nums.data);
+    da_free(&nums);
     return EXIT_SUCCESS;
 }

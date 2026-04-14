@@ -13,12 +13,13 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 
 ## What I Can Think of Adding
 
-- [] Custom heap & API (malloc, realloc, free, and others)
-- [] Runtime error system
-- [] Ownership semantics and recursive freeing for pointer types
-- [] Safe getters for union values (checking `value.type` before extraction)
-- [] Hash maps / Dictionaries
-- [] Proper String type (with length and capacity)
+- Runtime error system
+- Array indexing
+- Ownership semantics and recursive freeing for pointer types
+- Proper String type (with length and capacity)
+- Safe getters for union values (checking `value.type` before extraction)
+- Custom heap & API (malloc, realloc, free, and others)
+- Hash maps / Dictionaries
 
 ## Why Did I Make This
 
