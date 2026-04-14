@@ -11,10 +11,11 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 - [x] Safe API for all operations (option types, dynamic arrays, and value creation)
 - [X] Ownership semantics and recursive freeing for pointer types
 - [X] Array indexing
-- [X] Array slicing
+- [X] Array slicing (mistakenly committed as string slicing)
 
 ## What I Can Think of Adding:
 
+- Allow Options to be instantiated as Values
 - Runtime error system
 - Proper String type (with length and capacity)
 - Safe getters for union values (checking `value.type` before extraction)

@@ -156,11 +156,66 @@ static inline Value as_str(char* data) {
  * safe helper to unwrap option types
  */
 static inline Value unwrap_option(Option opt) {
-    if (opt.some) {
-        return opt.val;
-    }
+    if (!opt.some) return AS_VAL(0);
+    return opt.val;
+}
 
-    return AS_VAL(0);
+/**
+ * safe helper to cast between types
+ */
+static inline bool try_cast(Type target, Value in, Value* out) {
+    // STEP 1: validate pointers and enum inputs
+    // STEP 2: fast path for same-type casts
+
+    // STEP 3: switch on source type, then handle allowed targets
+    // switch (in.type) {
+    //     case TYPE_INT:
+    //         - allow int -> uint/size/float/double/char/bool with range checks
+    //         - reject if negative for unsigned targets
+    //         - reject if outside target min/max
+    //         break;
+    //
+    //     case TYPE_UINT:
+    //     case TYPE_SIZE:
+    //         - allow to signed/float/double/char/bool with range checks
+    //         break;
+    //
+    //     case TYPE_FLOAT:
+    //     case TYPE_DOUBLE:
+    //         - reject NaN/Inf for integer targets
+    //         - for integer targets, reject fractional values if you want strict casts
+    //         - check min/max bounds before converting
+    //         break;
+    //
+    //     case TYPE_CHAR:
+    //     case TYPE_BOOL:
+    //         - allow to numeric targets (simple widening rules)
+    //         break;
+    //
+    //     case TYPE_STR:
+    //         - parse numeric values from string safely
+    //         - reject parse failures and overflow
+    //         break;
+    //
+    //     case TYPE_ARR:
+    //     case TYPE_NULL:
+    //         - only cast to self. reject everything else
+    //         break;
+    //
+    //     case COUNT_OF_TYPES:
+    //         - reject as this is an invalid type
+    //         break;
+    // }
+
+    // STEP 4: if conversion path succeeded, write *out and return true
+    // STEP 5: on any failure, write a null and return false
+    // *out = make_val(TYPE_NULL, (TypedValue){.i = 0});
+    // return false;
+
+    (void)in;
+    (void)target;
+    (void)out;
+    return false;
 }
 
 #endif
