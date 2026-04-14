@@ -2,7 +2,7 @@
 
 This is a dumb little project I made which may get mildly expanded on, but mostly exists as a tutorial on how to implement dynamic typing in C.
 
-## What This Contains
+## What This Contains:
 
 - [x] 0% AI Generated Bullshit. Every crash is of my own volition
 - [x] Runtime type system (union-based TypedValue)
@@ -11,7 +11,7 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 - [x] Safe API for all operations (option types, dynamic arrays, and value creation)
 - [X] Ownership semantics and recursive freeing for pointer types
 
-## What I Can Think of Adding
+## What I Can Think of Adding:
 
 - Runtime error system
 - Array indexing
@@ -20,7 +20,7 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 - Custom heap & API (malloc, realloc, free, and others)
 - Hash maps / Dictionaries
 
-## Why Did I Make This
+## Why Did I Make This?
 
 Quite honestly, this semester has burnt out all desire of mine to code. I have floated switching majors at least once. However, I realize this is what I see myself doing, and I hope to find my love for coding back with some slow, small projects.
 

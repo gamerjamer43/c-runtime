@@ -19,23 +19,27 @@
  * attempt to resize the array provided a new size
  */
 static inline bool da_resize(DynArr *arr, usize new_cap) {
+    if (new_cap == arr->cap) return true;
+
     void *new_data = realloc(arr->data, new_cap * sizeof(Value));
-    if (new_data == NULL) return false;
+    if (new_data == NULL && new_cap != 0) return false;
 
     arr->data = new_data;
     arr->cap = new_cap;
+    if (arr->len > new_cap) arr->len = new_cap;
+
     return true;
 }
 
 /**
- * attempt to append a value to the array, return boolean success 
+ * attempt to append a value to the end of the array, return boolean success 
  */
 static inline bool da_append(DynArr *arr, Value value) {
+    if (arr->type != value.type) return false;
     if (arr->len == arr->cap) {
         usize new_cap = arr->cap == 0 ? 8 : arr->cap * 2;
 
         if (!da_resize(arr, new_cap)) return false;
-        if (arr->type != value.type) return false;
     }
 
     Value *data = (Value *)arr->data;
