@@ -231,6 +231,8 @@ static inline bool try_cast(Type target, Value in, Value* out) {
                 default:
                     break;
             }
+
+            break;
         }
 
         case TYPE_UINT:
@@ -281,6 +283,8 @@ static inline bool try_cast(Type target, Value in, Value* out) {
                 default:
                     break;
             }
+
+            break;
         }
 
         case TYPE_FLOAT:
@@ -332,6 +336,8 @@ static inline bool try_cast(Type target, Value in, Value* out) {
                 default:
                     break;
             }
+
+            break;
         }
 
         case TYPE_CHAR:
@@ -381,6 +387,8 @@ static inline bool try_cast(Type target, Value in, Value* out) {
                 default:
                     break;
             }
+
+            break;
         }
 
         case TYPE_STR: {
