@@ -18,7 +18,14 @@
 #ifndef TYPING_H
 #define TYPING_H
 
+#include <ctype.h>
+#include <errno.h>
+#include <float.h>
+#include <limits.h>
+#include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "ntypes.h"
 
 /**
@@ -165,56 +172,240 @@ static inline Value unwrap_option(Option opt) {
  */
 static inline bool try_cast(Type target, Value in, Value* out) {
     // STEP 1: validate pointers and enum inputs
+    if (out == NULL) return false;
+
+    if (target < 0 || target >= COUNT_OF_TYPES || in.type < 0 || in.type >= COUNT_OF_TYPES) {
+        *out = make_val(TYPE_NULL, (TypedValue){.i = 0});
+        return false;
+    }
+
     // STEP 2: fast path for same-type casts
+    if (target == in.type) {
+        *out = in;
+        return true;
+    }
+
+    Value result = make_val(TYPE_NULL, (TypedValue){.i = 0});
+    bool success = false;
 
     // STEP 3: switch on source type, then handle allowed targets
-    // switch (in.type) {
-    //     case TYPE_INT:
-    //         - allow int -> uint/size/float/double/char/bool with range checks
-    //         - reject if negative for unsigned targets
-    //         - reject if outside target min/max
-    //         break;
-    //
-    //     case TYPE_UINT:
-    //     case TYPE_SIZE:
-    //         - allow to signed/float/double/char/bool with range checks
-    //         break;
-    //
-    //     case TYPE_FLOAT:
-    //     case TYPE_DOUBLE:
-    //         - reject NaN/Inf for integer targets
-    //         - for integer targets, reject fractional values if you want strict casts
-    //         - check min/max bounds before converting
-    //         break;
-    //
-    //     case TYPE_CHAR:
-    //     case TYPE_BOOL:
-    //         - allow to numeric targets (simple widening rules)
-    //         break;
-    //
-    //     case TYPE_STR:
-    //         - parse numeric values from string safely
-    //         - reject parse failures and overflow
-    //         break;
-    //
-    //     case TYPE_ARR:
-    //     case TYPE_NULL:
-    //         - only cast to self. reject everything else
-    //         break;
-    //
-    //     case COUNT_OF_TYPES:
-    //         - reject as this is an invalid type
-    //         break;
-    // }
+    switch (in.type) {
+        case TYPE_INT: {
+            // allow int -> uint/size/float/double/char/bool with range checks
+            const i64 v = in.as.i;
+
+            switch (target) {
+                case TYPE_BOOL:
+                    result = make_val(TYPE_BOOL, (TypedValue){.b = (v != 0)});
+                    success = true;
+                    break;
+
+                case TYPE_CHAR:
+                    if (v < CHAR_MIN || v > CHAR_MAX) break;
+                    result = make_val(TYPE_CHAR, (TypedValue){.c = (char)v});
+                    success = true;
+                    break;
+
+                case TYPE_UINT:
+                    if (v < 0) break;
+                    result = make_val(TYPE_UINT, (TypedValue){.u = (u64)v});
+                    success = true;
+                    break;
+
+                case TYPE_SIZE:
+                    if (v < 0 || (u64)v > (u64)SIZE_MAX) break;
+                    result = make_val(TYPE_SIZE, (TypedValue){.s = (usize)v});
+                    success = true;
+                    break;
+
+                case TYPE_FLOAT:
+                    result = make_val(TYPE_FLOAT, (TypedValue){.f = (f32)v});
+                    success = true;
+                    break;
+
+                case TYPE_DOUBLE:
+                    result = make_val(TYPE_DOUBLE, (TypedValue){.d = (f64)v});
+                    success = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        case TYPE_UINT:
+        case TYPE_SIZE: {
+            // allow to signed/float/double/char/bool with range checks
+            const u64 v = (in.type == TYPE_UINT) ? in.as.u : (u64)in.as.s;
+
+            switch (target) {
+                case TYPE_BOOL:
+                    result = make_val(TYPE_BOOL, (TypedValue){.b = (v != 0)});
+                    success = true;
+                    break;
+
+                case TYPE_CHAR:
+                    if (v > (u64)CHAR_MAX) break;
+                    result = make_val(TYPE_CHAR, (TypedValue){.c = (char)v});
+                    success = true;
+                    break;
+
+                case TYPE_INT:
+                    if (v > (u64)LLONG_MAX) break;
+                    result = make_val(TYPE_INT, (TypedValue){.i = (i64)v});
+                    success = true;
+                    break;
+
+                case TYPE_UINT:
+                    if (in.type == TYPE_SIZE && sizeof(usize) > sizeof(u64) && in.as.s > (usize)UINT64_MAX) break;
+                    result = make_val(TYPE_UINT, (TypedValue){.u = v});
+                    success = true;
+                    break;
+
+                case TYPE_SIZE:
+                    if (in.type == TYPE_UINT && v > (u64)SIZE_MAX) break;
+                    result = make_val(TYPE_SIZE, (TypedValue){.s = (usize)v});
+                    success = true;
+                    break;
+
+                case TYPE_FLOAT:
+                    result = make_val(TYPE_FLOAT, (TypedValue){.f = (f32)v});
+                    success = true;
+                    break;
+
+                case TYPE_DOUBLE:
+                    result = make_val(TYPE_DOUBLE, (TypedValue){.d = (f64)v});
+                    success = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        case TYPE_FLOAT:
+        case TYPE_DOUBLE: {
+            // reject NaN/Inf for integer targets
+            const f64 v = (in.type == TYPE_FLOAT) ? (f64)in.as.f : in.as.d;
+
+            switch (target) {
+                case TYPE_BOOL:
+                    result = make_val(TYPE_BOOL, (TypedValue){.b = (v != 0.0)});
+                    success = true;
+                    break;
+
+                case TYPE_CHAR:
+                    if (!isfinite(v) || trunc(v) != v || v < (f64)CHAR_MIN || v > (f64)CHAR_MAX) break;
+                    result = make_val(TYPE_CHAR, (TypedValue){.c = (char)v});
+                    success = true;
+                    break;
+
+                case TYPE_INT:
+                    if (!isfinite(v) || trunc(v) != v || v < (f64)LLONG_MIN || v > (f64)LLONG_MAX) break;
+                    result = make_val(TYPE_INT, (TypedValue){.i = (i64)v});
+                    success = true;
+                    break;
+
+                case TYPE_UINT:
+                    if (!isfinite(v) || trunc(v) != v || v < 0.0 || v > (f64)ULLONG_MAX) break;
+                    result = make_val(TYPE_UINT, (TypedValue){.u = (u64)v});
+                    success = true;
+                    break;
+
+                case TYPE_SIZE:
+                    if (!isfinite(v) || trunc(v) != v || v < 0.0 || v > (f64)SIZE_MAX) break;
+                    result = make_val(TYPE_SIZE, (TypedValue){.s = (usize)v});
+                    success = true;
+                    break;
+
+                case TYPE_FLOAT:
+                    if (isfinite(v) && fabs(v) > (f64)FLT_MAX) break;
+                    result = make_val(TYPE_FLOAT, (TypedValue){.f = (f32)v});
+                    success = true;
+                    break;
+
+                case TYPE_DOUBLE:
+                    result = make_val(TYPE_DOUBLE, (TypedValue){.d = (f64)v});
+                    success = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        case TYPE_CHAR:
+        case TYPE_BOOL: {
+            // - allow to numeric targets (simple widening rules)
+            const i64 v = (in.type == TYPE_CHAR) ? (i64)in.as.c : (in.as.b ? 1 : 0);
+
+            switch (target) {
+                case TYPE_BOOL:
+                    result = make_val(TYPE_BOOL, (TypedValue){.b = (v != 0)});
+                    success = true;
+                    break;
+
+                case TYPE_CHAR:
+                    if (v < CHAR_MIN || v > CHAR_MAX) break;
+                    result = make_val(TYPE_CHAR, (TypedValue){.c = (char)v});
+                    success = true;
+                    break;
+
+                case TYPE_INT:
+                    result = make_val(TYPE_INT, (TypedValue){.i = v});
+                    success = true;
+                    break;
+
+                case TYPE_UINT:
+                    if (v < 0) break;
+                    result = make_val(TYPE_UINT, (TypedValue){.u = (u64)v});
+                    success = true;
+                    break;
+
+                case TYPE_SIZE:
+                    if (v < 0) break;
+                    result = make_val(TYPE_SIZE, (TypedValue){.s = (usize)v});
+                    success = true;
+                    break;
+
+                case TYPE_FLOAT:
+                    result = make_val(TYPE_FLOAT, (TypedValue){.f = (f32)v});
+                    success = true;
+                    break;
+
+                case TYPE_DOUBLE:
+                    result = make_val(TYPE_DOUBLE, (TypedValue){.d = (f64)v});
+                    success = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        case TYPE_STR: {
+            // parse numeric values from string safely
+            break;
+        }
+
+        // don't know what to do for this yet
+        case TYPE_ARR: break;
+
+        // null only casts to itself (handled in the fast path)
+        case TYPE_NULL: break;
+
+        // reject as invalid type
+        case COUNT_OF_TYPES: break;
+    }
 
     // STEP 4: if conversion path succeeded, write *out and return true
     // STEP 5: on any failure, write a null and return false
-    // *out = make_val(TYPE_NULL, (TypedValue){.i = 0});
-    // return false;
+    if (success) {
+        *out = result;
+        return true;
+    }
 
-    (void)in;
-    (void)target;
-    (void)out;
+    *out = make_val(TYPE_NULL, (TypedValue){.i = 0});
     return false;
 }
 
