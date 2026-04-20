@@ -12,16 +12,16 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 - [x] Ownership semantics and recursive freeing for pointer types
 - [x] Array indexing
 - [x] Array slicing (mistakenly committed as string slicing)
-- Runtime error system [50%]
+- [x] Safe Iterables (can be iterated without causing UB)
+- Safe casting between types [70%]
+- Runtime error system [70%]
 
 ## What I Can Think of Adding:
 
 - Allow Options to be instantiated as Values (this can be recursive, an Option can unwrap to another Option)
-- Safe Iterables (can be iterated without causing UB)
 - Proper String type (with length and capacity)
 - Safe getters for union values (checking `value.type` before extraction)
 - Other types of fat pointer
-- Safe casting between types
 - Custom heap & API (malloc, realloc, free, ref/deref and others)
 - Hash maps / Dictionaries
 
