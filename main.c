@@ -6,7 +6,18 @@
 #include "src/dynarr.h"
 #include "src/error.h"
 
-int main() {
+/**
+ * safe cleanup with exit just cuz this is reused a lot
+ */
+void da_cleanup(DynArr *arr) {
+    da_free(arr);
+    exit(EXIT_SUCCESS);
+}
+
+/**
+ * want it clear what happens before and after so this is here too
+ */
+DynArr da_setup() {
     DynArr nums = da_make_arr(TYPE_INT);
 
     printf("Append 10 items to the array\n");
@@ -15,9 +26,15 @@ int main() {
 
         if (!da_append(&nums, add)) {
             fprintf(stderr, "Failed to append %d to array.\n", i);
-            goto cleanup;
+            da_cleanup(&nums);
         }
     }
+
+    return nums;
+}
+
+int main() {
+    DynArr nums = da_setup();
 
     printf("Print those 10 items from the array:\n");
     for (usize i = 0; i < nums.len; i++) {
@@ -50,6 +67,14 @@ int main() {
         printf("%lli\n", items[i].as.i);
     }
 
+    // printf("\nReverse slicing:\n");
+    // slice = da_slice(&nums, 3, 0);
+    // items = (Value*)slice.data;
+    // printf("Print that slice (MAKE SURE TO INVERT, MIGHT JUST MAKE ITERABLES):\n");
+    // for (usize i = slice.start; i > slice.end; i--) {
+    //     printf("%lli\n", items[i].as.i);
+    // }
+
     printf("\nTesting casting. Created a signed integer 42\n");
     val = AS_VAL(42);
 
@@ -60,8 +85,5 @@ int main() {
         printf("cast ok: %llu\n", (unsigned long long)val.as.u);
     }
 
-// using go to because clean! clean!
-cleanup:
-    da_free(&nums);
-    return EXIT_SUCCESS;
+    da_cleanup(&nums);
 }

@@ -9,14 +9,15 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 - [x] Option type (some presenting a boolean, which if true can be unwrapped)
 - [x] Typed, resizeable, heap dynamic arrays
 - [x] Safe API for all operations (option types, dynamic arrays, and value creation)
-- [X] Ownership semantics and recursive freeing for pointer types
-- [X] Array indexing
-- [X] Array slicing (mistakenly committed as string slicing)
+- [x] Ownership semantics and recursive freeing for pointer types
+- [x] Array indexing
+- [x] Array slicing (mistakenly committed as string slicing)
+- Runtime error system [50%]
 
 ## What I Can Think of Adding:
 
-- Allow Options to be instantiated as Values
-- Runtime error system
+- Allow Options to be instantiated as Values (this can be recursive, an Option can unwrap to another Option)
+- Safe Iterables (can be iterated without causing UB)
 - Proper String type (with length and capacity)
 - Safe getters for union values (checking `value.type` before extraction)
 - Other types of fat pointer

@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "error.h"
 #include "ntypes.h"
 
 /**
@@ -33,13 +34,14 @@
  * char* doesnt work due to an implicit cast 
  */
 #define AS_VAL(x) _Generic((x), \
-    int:       make_val(TYPE_INT,    (TypedValue){.i =   (i64)(x)}), \
-    long long: make_val(TYPE_INT,    (TypedValue){.i =   (i64)(x)}), \
-    float:     make_val(TYPE_FLOAT,  (TypedValue){.f =   (f32)(x)}), \
-    double:    make_val(TYPE_DOUBLE, (TypedValue){.d =   (f64)(x)}), \
-    char:      make_val(TYPE_CHAR,   (TypedValue){.c =   (char)(x)}) \
+    int:       make_val(TYPE_INT,    (TypedValue){.i = (i64)(x)}), \
+    long long: make_val(TYPE_INT,    (TypedValue){.i = (i64)(x)}), \
+    float:     make_val(TYPE_FLOAT,  (TypedValue){.f = (f32)(x)}), \
+    double:    make_val(TYPE_DOUBLE, (TypedValue){.d = (f64)(x)}), \
+    char:      make_val(TYPE_CHAR,   (TypedValue){.c = (char)(x)}), \
+    default:   error(ERROR_INVALID_ARGUMENT, "invalid type for AS_VAL: " #x) \
 )
-
+ 
 /**
  * enum containing all types recognized by the runtime.
  */

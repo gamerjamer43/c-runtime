@@ -14,11 +14,13 @@
 #define DYNARR_H
 
 #include "typing.h"
+#include "error.h"
 
 /**
  * helper to create an array safely
  */
 static inline DynArr da_make_arr(Type t) {
+    if (t >= COUNT_OF_TYPES) return (DynArr){0};
     return (DynArr){.type = t, .cap = 0, .len = 0, .data = NULL};
 }
 
@@ -29,7 +31,10 @@ static inline bool da_resize(DynArr *arr, usize new_cap) {
     if (new_cap == arr->cap) return true;
 
     void *new_data = realloc(arr->data, new_cap * sizeof(Value));
-    if (new_data == NULL && new_cap != 0) return false;
+    if (new_data == NULL && new_cap != 0) {
+        error(ERROR_OUT_OF_MEMORY, "array resize failed.");
+        return false;
+    }
 
     arr->data = new_data;
     arr->cap = new_cap;
@@ -46,7 +51,10 @@ static inline bool da_append(DynArr *arr, Value value) {
     if (arr->len == arr->cap) {
         usize new_cap = arr->cap == 0 ? 8 : arr->cap * 2;
 
-        if (!da_resize(arr, new_cap)) return false;
+        if (!da_resize(arr, new_cap)) {
+            error(ERROR_OUT_OF_MEMORY, "array resize failed.");
+            return false;
+        }
     }
 
     Value *data = (Value *)arr->data;
@@ -82,7 +90,10 @@ static inline bool da_insert(DynArr *arr, Value value, usize index) {
     while (index >= arr->cap) {
         usize new_cap = arr->cap == 0 ? 8 : arr->cap * 2;
 
-        if (!da_resize(arr, new_cap)) return false;
+        if (!da_resize(arr, new_cap)) {
+            error(ERROR_OUT_OF_MEMORY, "array resize failed.");
+            return false;
+        }
     }
 
     Value *data = (Value *)arr->data;
@@ -136,7 +147,18 @@ static inline bool da_free(DynArr* arr) {
  * to iterate, simply use a for loop from start to end
  */
 static inline Slice da_slice(DynArr* data, usize start, usize end) {
-    if (data == NULL || start > end || end > data->len) return (Slice){0};
+    if (data == NULL) {
+        error(ERROR_NULL_POINTER, "reference to data is null.");
+    }
+
+    if (end > data->len) {
+        error(ERROR_INDEX_OUT_OF_BOUNDS, "end of slice is out of bounds");
+    }
+    
+    if (start > data->len) {
+        error(ERROR_INDEX_OUT_OF_BOUNDS, "start of slice is out of bounds");
+    }
+    
     return (Slice){.type = data->type, .data = data->data, .start = start, .end = end};
 }
 
