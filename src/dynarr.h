@@ -17,6 +17,19 @@
 #include "error.h"
 
 /**
+ * helper macro to iterate over slice safely (upwards if up, downwards if down)
+ */
+#define FOR_ITER(s) \
+    for (bool _run = 1; _run; _run = 0) \
+        for (Slice _s = (s); _run; _run = 0) \
+            if (_s.data == NULL || _s.type >= COUNT_OF_TYPES) { \
+                error(ERROR_INVALID_ARGUMENT, "invalid slice passed to FOR_ITER."); \
+            } else \
+                for (usize i = _s.start, _end = _s.end, _dir = (_s.start > _s.end); \
+                     _dir ? (i > _end) : (i < _end); \
+                     _dir ? --i : ++i)
+
+/**
  * helper to create an array safely
  */
 static inline DynArr da_make_arr(Type t) {

@@ -67,6 +67,12 @@ int main() {
         printf("%lli\n", items[i].as.i);
     }
 
+    // if slice is invalid, OutOfBoundsError is thrown when trying to iter using FOR_ITER
+    printf("\nTesting for iter:\n");
+    FOR_ITER(slice) {
+        printf("%lli\n", items[i].as.i);
+    }
+
     // printf("\nReverse slicing:\n");
     // slice = da_slice(&nums, 3, 0);
     // items = (Value*)slice.data;
