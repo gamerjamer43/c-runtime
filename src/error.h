@@ -1,3 +1,14 @@
+/**
+ * error - the api for runtime error handling
+ * 
+ * contains the enum for error types, and an inlined error function which prints an error type + message and quits
+ * 
+ * ErrorType                             -> enum containing all possible error types
+ * void error(ErrorType type, char* msg) -> function that given a type and message, triggers that error and exits
+ * 
+ * @author Noah Mingolelli
+ */
+
 #ifndef ERROR_H
 #define ERROR_H
 

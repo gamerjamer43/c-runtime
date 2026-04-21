@@ -2,10 +2,10 @@
  * dynarr - the api for safe use of dynamic arrays
  * contains inline functions for array resizing, appending, indexing, and creation
  * 
- * bool da_resize(DynArr *arr, usize new_cap)           -> returns true if a resize was possible (and done), false if something went wrong
- * bool da_append(DynArr *arr, Value value)             -> returns true if a value was added to the provided array, return false if something went wrong
+ * bool da_resize(DynArr *arr, usize new_cap)      -> returns true if a resize was possible (and done), false if something went wrong
+ * bool da_append(DynArr *arr, Value value)        -> returns true if a value was added to the provided array, return false if something went wrong
  * Option da_index(const DynArr *arr, usize index) -> try and index into the array, if a value is presented return an Option with some = true, else return an option with some = false
- * DynArr da_make_arr(Type t)                           -> safely create a new dynamic array given its type
+ * DynArr da_make_arr(Type t)                      -> safely create a new dynamic array given its type
  * 
  * @author Noah Mingolelli
  */
@@ -18,6 +18,7 @@
 
 /**
  * helper macro to iterate over slice safely (upwards if up, downwards if down)
+ * c macros with a body need this stupid trick (esp cuz im basically making a custom for loop)
  */
 #define FOR_ITER(s) \
     for (bool _run = 1; _run; _run = 0) \

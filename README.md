@@ -29,6 +29,10 @@ This is a dumb little project I made which may get mildly expanded on, but mostl
 
 - Slicing is not fully safe yet. It can point to deinitialized data, and uninitialized data can be in the slice range (which is mostly prevented by the safety of array insertions).
 - The generic AS_VAL does not encompass char pointers because of a missize. Use as_str("data") instead.
+- Strings aren't fully safe. They use bare char* instead of an owned string type.
+- RuntimeErrors are unrecoverable. I don't know if this is a pitfall exactly, but Exceptions will be added later.
+- Casting is incomplete for string casting. I want to provide numeric casting for strings but this isn't done yet.
+- Slice references do not get invalidated if the underlying data is changed. Not sure if I'll add this.
 
 ## Why Did I Make This?
 

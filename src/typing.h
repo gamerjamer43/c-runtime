@@ -8,9 +8,11 @@
  * TypedValue -> a union containing all types recognized in type (null is an int value of 0)
  * Value      -> a struct containing a TypedValue and its Type (allowing us to pun properly)
  * 
- * char* type_of(Value value)                -> given a value, return the string type of it's name (RTTI)
- * Value make_val(Type type, TypedValue val) -> given a Type and TypedValue, safely validate and return a Value
- * Value unwrap_option(Option opt)           -> return the options value, or null if nothing is presented. considering adding a unit type for this
+ * type_of(Value value)                        -> given a value, return the string type of it's name (RTTI)
+ * make_val(Type type, TypedValue val)         -> given a Type and TypedValue, safely validate and return a Value
+ * as_str(char* data)                          -> create a Value wrapping a string
+ * unwrap_option(Option opt)                   -> return the options value, or null if nothing is presented
+ * try_cast(Type target, Value in, Value* out) -> cast a Value to a target Type with type and range validation
  * 
  * @author Noah Mingolelli
  */
