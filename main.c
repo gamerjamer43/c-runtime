@@ -4,7 +4,7 @@
 
 #include "src/typing.h"
 #include "src/dynarr.h"
-// #include "src/hashmap.h"
+#include "src/hashmap.h"
 #include "src/error.h"
 
 /**
