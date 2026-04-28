@@ -116,7 +116,7 @@ typedef struct {
  * array slice. fat pointer containing a type, and start to end range
  */
 typedef struct {
-    void* data;
+    Value* data;
     usize start;
     usize end;
     Type type;

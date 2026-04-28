@@ -4,6 +4,7 @@
 
 #include "src/typing.h"
 #include "src/dynarr.h"
+// #include "src/hashmap.h"
 #include "src/error.h"
 
 /**
@@ -60,7 +61,7 @@ int main() {
 
     printf("\nSlice from 0 to 2\n");
     Slice slice = da_slice(&nums, 0, 3);
-    Value* items = (Value*)slice.data;
+    Value* items = slice.data;
 
     printf("Print that slice:\n");
     for (usize i = slice.start; i < slice.end; i++) {
@@ -75,7 +76,7 @@ int main() {
 
     // printf("\nReverse slicing:\n");
     // slice = da_slice(&nums, 3, 0);
-    // items = (Value*)slice.data;
+    // items = slice.data;
     // printf("Print that slice (MAKE SURE TO INVERT, MIGHT JUST MAKE ITERABLES):\n");
     // for (usize i = slice.start; i > slice.end; i--) {
     //     printf("%lli\n", items[i].as.i);
